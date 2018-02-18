@@ -6,7 +6,7 @@
     /// <summary>
     ///     Class that writes to the console in a pretty way.
     /// </summary>
-    internal class Window
+    internal class Window : IWriter
     {
         private int _width;
 
@@ -29,10 +29,17 @@
         [ContractAnnotation("=> halt")]
         public void ErrorQuit(string errorMessage)
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Red;
             Console.WriteLine(errorMessage);
             Console.WriteLine("Press any key to quit.");
             Console.ReadKey();
             Environment.Exit(1);
+        }
+
+        public void Write(string text, params IHighlighter[] highlighters)
+        {
+            throw new NotImplementedException();
         }
     }
 }

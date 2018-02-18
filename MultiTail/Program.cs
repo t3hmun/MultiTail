@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Newtonsoft.Json;
 
     internal static class Program
     {
-        private const string BaseConfig = "default.mtconf";
+        private const string BaseConfig = "default.json";
         private const string ConfigExtension = "mtconf";
 
         public static void Main()
@@ -15,12 +17,71 @@
             var win = new Window();
 
             var settings = ParseArgs(win);
+
+            var streams = new List<FileStream>();
+            foreach (var fileSetting in settings.File)
+            {
+                var fs = new FileStream(file.Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                streams.Add(fs);
+            }
+
+            var quit = false;
+            int slept = 0;
+            
+            while (!quit)
+            {
+                bool update = false;
+                if (Console.KeyAvailable)
+                {
+                    var key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Q)
+                    {
+                        Environment.Exit(0);
+                    }
+
+                    if (key.Key == ConsoleKey.Enter)
+                    {
+                        update = true;
+                    }
+                }
+                else
+                {
+                    update = slept > settings.UpdateInterval;
+                    slept = 0;
+                }
+
+                if (update)
+                {
+                    foreach (var stream in streams)
+                    {
+                        
+                    }
+                }
+                
+                Thread.Sleep(50);
+                slept += 50;
+                
+                
+            }
         }
 
-        private static void Tail(FileSetting file)
+        
+        
+        
+        private class Tail
         {
-            using (var fs = new FileStream(file.Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            public int LastPosition { get; set; }
+            public FileStream Stream { get; set; }
+
+            public Tail(FileStream stream, int readTo, IWriter writer)
             {
+                Stream = stream;
+                
+            }
+
+            public void Read()
+            {
+                
             }
         }
 
