@@ -5,9 +5,9 @@
         /// <summary>
         ///     A period of a line of text that should have a highlighting applied to it.
         /// </summary>
-        /// <param name="startIndex"></param>
-        /// <param name="length"></param>
-        /// <param name="highlighter"></param>
+        /// <param name="startIndex">Start index on the original body of text that this highlight should be applied.</param>
+        /// <param name="length">The length opf text to apply this highlight to.</param>
+        /// <param name="highlighter">The highlighter containing details of the colour and where it is applicable.</param>
         public HighlightSection(int startIndex, int length, IHighlight highlighter)
         {
             StartIndex = startIndex;
