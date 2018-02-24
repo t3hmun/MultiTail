@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="FileSetting.cs" />
     <Compile Include="Highlighter\HighlightSection.cs" />
+    <Compile Include="Highlighter\IHighlight.cs" />
     <Compile Include="Highlighter\IHighlighter.cs" />
     <Compile Include="Highlighter\RegexHighlighter.cs" />
     <Compile Include="IWriter.cs" />

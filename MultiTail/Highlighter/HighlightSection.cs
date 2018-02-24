@@ -2,7 +2,13 @@
 {
     internal class HighlightSection
     {
-        public HighlightSection(int startIndex, int length, IHighlighter highlighter)
+        /// <summary>
+        ///     A period of a line of text that should have a highlighting applied to it.
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="length"></param>
+        /// <param name="highlighter"></param>
+        public HighlightSection(int startIndex, int length, IHighlight highlighter)
         {
             StartIndex = startIndex;
             Length = length;
@@ -12,6 +18,6 @@
         public int StartIndex { get; }
         public int Length { get; }
         public int EndIndex => StartIndex + Length;
-        public IHighlighter Highlighter { get; }
+        public IHighlight Highlighter { get; }
     }
 }

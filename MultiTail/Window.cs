@@ -44,14 +44,14 @@
         }
 
         private void WritePushPopHighlightSequence(string text,
-            List<(int index, bool push, IHighlighter highlighter, int depth)> changes)
+            List<(int index, bool push, IHighlight highlighter, int depth)> changes)
         {
             var changesSorted = changes.OrderBy(c => c.index);
 
             var prevIndex = 0;
             var currentForeground = _defualtForeground;
             var currentBackground = _defualtBackground;
-            var changeStack = new Stack<(int index, bool push, IHighlighter highlighter, int depth)>();
+            var changeStack = new Stack<(int index, bool push, IHighlight highlighter, int depth)>();
             foreach (var change in changesSorted)
             {
                 // Before we make the change write everythign upto this change.
@@ -102,7 +102,7 @@
             WriteLine(finalBit, currentForeground, currentBackground);
         }
 
-        private static List<(int index, bool push, IHighlighter highlighter, int depth)>
+        private static List<(int index, bool push, IHighlight highlighter, int depth)>
             GeneratePushPopSequenceFromSections(IEnumerable<HighlightSection> sections)
         {
             var sortedSections = sections.OrderBy(s => s.StartIndex);
@@ -110,7 +110,7 @@
             const string baseContext = "base";
             const string allContext = "all";
 
-            var changes = new List<(int index, bool push, IHighlighter highlighter, int depth)>();
+            var changes = new List<(int index, bool push, IHighlight highlighter, int depth)>();
             var sectionStack = new Stack<HighlightSection>();
             foreach (var section in sortedSections)
             {
