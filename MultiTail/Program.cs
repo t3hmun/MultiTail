@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading;
-    using System.Threading.Tasks;
     using Newtonsoft.Json;
 
     internal static class Program
@@ -26,23 +25,17 @@
             }
 
             var quit = false;
-            int slept = 0;
-            
+            var slept = 0;
+
             while (!quit)
             {
-                bool update = false;
+                var update = false;
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.Q)
-                    {
-                        Environment.Exit(0);
-                    }
+                    if (key.Key == ConsoleKey.Q) Environment.Exit(0);
 
-                    if (key.Key == ConsoleKey.Enter)
-                    {
-                        update = true;
-                    }
+                    if (key.Key == ConsoleKey.Enter) update = true;
                 }
                 else
                 {
@@ -51,37 +44,12 @@
                 }
 
                 if (update)
-                {
                     foreach (var stream in streams)
                     {
-                        
                     }
-                }
-                
+
                 Thread.Sleep(50);
                 slept += 50;
-                
-                
-            }
-        }
-
-        
-        
-        
-        private class Tail
-        {
-            public int LastPosition { get; set; }
-            public FileStream Stream { get; set; }
-
-            public Tail(FileStream stream, int readTo, IWriter writer)
-            {
-                Stream = stream;
-                
-            }
-
-            public void Read()
-            {
-                
             }
         }
 
@@ -121,6 +89,22 @@
         {
             if (settings.ReadTo <= 0) settings.ReadTo = win.Height;
             if (settings.File == null) settings.File = new List<FileSetting>();
+        }
+
+
+        private class Tail
+        {
+            public Tail(FileStream stream, int readTo, IWriter writer)
+            {
+                Stream = stream;
+            }
+
+            public int LastPosition { get; set; }
+            public FileStream Stream { get; }
+
+            public void Read()
+            {
+            }
         }
     }
 }

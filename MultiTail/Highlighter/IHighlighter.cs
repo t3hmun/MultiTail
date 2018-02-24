@@ -1,14 +1,14 @@
-﻿namespace T3h.MultiTail
+﻿namespace T3h.MultiTail.Highlighter
 {
     using System;
     using System.Collections.Generic;
 
-    interface IHighlighter
+    internal interface IHighlighter
     {
-        IEnumerable<HighlightSection> Apply(string text);
         ConsoleColor Foreground { get; }
         ConsoleColor Background { get; }
         string Name { get; }
         string[] ValidIn { get; }
+        IEnumerable<HighlightSection> Apply(string text);
     }
 }
