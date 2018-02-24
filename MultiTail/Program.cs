@@ -8,24 +8,22 @@
 
     internal static class Program
     {
-        private const string BaseConfig = "default.json";
+        private const string BaseConfig = "defaultSettings.json";
         private const string ConfigExtension = "mtconf";
 
         public static void Main()
         {
             var win = new Window();
 
-            var settings = ParseArgs(win);
+            var settings = LoadSettings(win);
 
-            var streams = new List<FileStream>();
+            var tails = new List<Tail>();
             foreach (var fileSetting in settings.File)
-            {
-                var fs = new FileStream(file.Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                streams.Add(fs);
-            }
+                tails.Add(new Tail(fileSetting, settings.ReadTo, line => win.WriteLine(line)));
 
             var quit = false;
             var slept = 0;
+            const int sleepyTime = 250;
 
             while (!quit)
             {
@@ -44,17 +42,15 @@
                 }
 
                 if (update)
-                    foreach (var stream in streams)
-                    {
-                    }
-
-                Thread.Sleep(50);
-                slept += 50;
+                    foreach (var tail in tails)
+                        tail.Update();
+                Thread.Sleep(sleepyTime);
+                slept += sleepyTime;
             }
         }
 
 
-        private static Settings ParseArgs(Window win)
+        private static Settings LoadSettings(Window win)
         {
             var fullBaseConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, BaseConfig);
             if (!File.Exists(fullBaseConfPath)) win.ErrorQuit($"Base config '{fullBaseConfPath}' missing.");
@@ -89,22 +85,6 @@
         {
             if (settings.ReadTo <= 0) settings.ReadTo = win.Height;
             if (settings.File == null) settings.File = new List<FileSetting>();
-        }
-
-
-        private class Tail
-        {
-            public Tail(FileStream stream, int readTo, IWriter writer)
-            {
-                Stream = stream;
-            }
-
-            public int LastPosition { get; set; }
-            public FileStream Stream { get; }
-
-            public void Read()
-            {
-            }
         }
     }
 }
