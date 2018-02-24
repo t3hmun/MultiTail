@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using Newtonsoft.Json;
 
@@ -18,8 +19,8 @@
             var settings = LoadSettings(win);
 
             var tails = new List<Tail>();
-            foreach (var fileSetting in settings.File)
-                tails.Add(new Tail(fileSetting, settings.ReadTo, line => win.WriteLine(line)));
+            foreach (var fileSetting in settings.Files)
+                tails.Add(new Tail(fileSetting, settings.InitalLinesReadFromEnd, line => win.WriteLine(line)));
 
             var quit = false;
             var slept = 0;
@@ -37,8 +38,11 @@
                 }
                 else
                 {
-                    update = slept > settings.UpdateInterval;
-                    slept = 0;
+                    if (slept > settings.UpdateInterval)
+                    {
+                        update = true;
+                        slept = 0;
+                    }
                 }
 
                 if (update)
@@ -60,31 +64,37 @@
 
             OverlayCalculatedDefaultSettings(settings, win);
 
-            var arg = Environment.CommandLine;
-            var argFile = arg.Trim().Trim('"');
 
-            if (string.IsNullOrEmpty(argFile))
+            var args = Environment.GetCommandLineArgs();
+            var files = args.Skip(1).ToArray();
+
+
+            if (!files.Any())
                 win.ErrorQuit($"No file argument supplied. A '.{ConfigExtension}' or file to tail must be supplied.");
 
-            if (!File.Exists(argFile)) win.ErrorQuit($"Supplied file '{argFile}' does not exist.");
+            foreach (var file in files)
+            {
+                if (!File.Exists(file)) win.ErrorQuit($"Supplied file '{file}' does not exist.");
 
-            if (argFile.EndsWith(ConfigExtension))
-            {
-                var userSettings = File.ReadAllText(fullBaseConfPath);
-                JsonConvert.PopulateObject(userSettings, settings);
+                if (file.EndsWith(ConfigExtension))
+                {
+                    var userSettings = File.ReadAllText(fullBaseConfPath);
+                    JsonConvert.PopulateObject(userSettings, settings);
+                }
+                else
+                {
+                    settings.Files.Add(new FileSetting(file));
+                }
             }
-            else
-            {
-                settings.File.Add(new FileSetting(argFile));
-            }
+
 
             return settings;
         }
 
         private static void OverlayCalculatedDefaultSettings(Settings settings, Window win)
         {
-            if (settings.ReadTo <= 0) settings.ReadTo = win.Height;
-            if (settings.File == null) settings.File = new List<FileSetting>();
+            if (settings.InitiallyReadOneWindow) settings.InitalLinesReadFromEnd = win.Height;
+            if (settings.Files == null) settings.Files = new List<FileSetting>();
         }
     }
 }

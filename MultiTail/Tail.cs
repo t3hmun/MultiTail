@@ -38,15 +38,21 @@
 
             foreach (var lineToWrite in queue) _writeLine(lineToWrite);
 
-            _thread = new Thread(ReadUntilKill);
-
             _fsw = new FileSystemWatcher
             {
                 Path = settings.Dir,
                 Filter = settings.Filename
             };
 
-            _fsw.Changed += (obj, args) => _waiter.Set();
+            _fsw.Changed += (obj, args) =>
+            {
+                _waiter.Set();
+            };
+            _fsw.EnableRaisingEvents = true;
+            
+            _thread = new Thread(ReadUntilKill);
+            _thread.Start();
+            
         }
 
         public void Dispose()

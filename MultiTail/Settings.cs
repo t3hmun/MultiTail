@@ -10,15 +10,20 @@
         /// <summary>
         ///     The initial number of lines at the end of the file to read.
         /// </summary>
-        public int ReadTo { get; set; }
+        public int InitalLinesReadFromEnd { get; set; }
+
+        /// <summary>
+        ///     Overrides <see cref="InitalLinesReadFromEnd" /> with the current hight of the console window.
+        /// </summary>
+        public bool InitiallyReadOneWindow { get; set; }
 
         /// <summary>
         ///     Files that are to be tailed.
         /// </summary>
-        public List<FileSetting> File { get; set; } = new List<FileSetting>();
+        public List<FileSetting> Files { get; set; } = new List<FileSetting>();
 
         /// <summary>
-        ///     The update interval in ms.
+        ///     The update interval in ms. This is a backup incase FileSystemWatcher mysteriously fails.
         /// </summary>
         public int UpdateInterval { get; set; }
     }
